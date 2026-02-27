@@ -1,15 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Instagram Downloader</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Downloader</title>
 </head>
 <body>
-    <h1>Download Instagram Media</h1>
-    <form action="/download" method="POST">
-        <label for="url">Enter Instagram Post URL:</label>
-        <input type="text" id="url" name="url" required>
-        <button type="submit">Download</button>
-    </form>
+    <h1>Instagram Downloader</h1>
+    <input type="text" id="url" placeholder="Enter Instagram post URL" />
+    <button id="downloadBtn">Download</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', async function() {
+            const url = document.getElementById('url').value;
+            const apiUrl = 'https://api.example.com/download'; // Replace with actual API URL
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('result').innerHTML = `<a href="${data.fileUrl}" download>Download File</a>`;
+                } else {
+                    document.getElementById('result').innerText = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error fetching the API';
+            }
+        });
+    </script>
 </body>
 </html>
