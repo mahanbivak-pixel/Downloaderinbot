@@ -7,30 +7,30 @@
 </head>
 <body>
     <h1>Instagram Downloader</h1>
-    <input type="text" id="url" placeholder="Enter Instagram post URL" />
-    <button id="downloadBtn">Download</button>
+    <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="Enter Instagram Post URL" required />
+        <button type="submit">Download</button>
+    </form>
     <div id="result"></div>
-
     <script>
-        document.getElementById('downloadBtn').addEventListener('click', async function() {
-            const url = document.getElementById('url').value;
-            const apiUrl = 'https://api.example.com/download'; // Replace with actual API URL
-
+        document.getElementById('urlForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value;
             try {
-                const response = await fetch(apiUrl, {
+                const response = await fetch('https://api.example.com/instagram/download', { // Replace with your actual API URL
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ url })
                 });
                 const data = await response.json();
-
-                if (data.success) {
-                    document.getElementById('result').innerHTML = `<a href="${data.fileUrl}" download>Download File</a>`;
-                } else {
-                    document.getElementById('result').innerText = 'Error: ' + data.message;
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to download');
                 }
+                document.getElementById('result').innerHTML = `<a href="${data.downloadLink}">Download Link</a>`;
             } catch (error) {
-                document.getElementById('result').innerText = 'Error fetching the API';
+                document.getElementById('result').innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
             }
         });
     </script>
